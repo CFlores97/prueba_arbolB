@@ -112,23 +112,36 @@ public class Tree {
             s.setN(0);
             s.setChild(root1);
             split(s,0,root1);
-            //insertNonFull(s,k);
+            insertNonFull(s,k);
         }else{
-          // insertNonFull(root1,k);
+           insertNonFull(root1,k);
         }
     }
 
-//    private void insertNonFull(Node x, Key k) {
-//        int i = x.getN();
-//        if (x.isIsLeaf()) {
-//            while(i>=1 && k < x.getKey(i)){
-//                Key temp=x.getKey(i+1);
-//                temp=x.getKey(i);
-//                
-//            }
-//        }
-//    }
-//    
+    private void insertNonFull(Node x, Key k) {
+        int i = x.getN();
+        if (x.isIsLeaf()) {
+            while(i>=1 && k.getASCII() < x.getKey(i).getASCII()){
+                x.keys.set(i + 1, x.keys.get(i));
+                i--;
+            }
+             x.keys.set(i + 1, k);
+             x.setN(x.getN()+1);
+        }else{
+            while(i>=1 && k.getASCII() < x.getKey(i).getASCII()){
+                i--;
+            }
+            i++;
+            if (x.getChild(i).getN()==grade-1) {
+                split(x, i, x.getChild(i));
+                if (k.getASCII()>x.getKey(i).getASCII()) {
+                    i++;
+                }
+            }
+            insertNonFull(x.getChild(i), k);
+        }
+    }
+    
 }
 
 
