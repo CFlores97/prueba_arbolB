@@ -112,9 +112,9 @@ public class Tree {
             s.setN(0);
             s.setChild(root1);
             split(s,0,root1);
-            insertNonFull(s,k);
+            //insertNonFull(s,k);
         }else{
-           insertNonFull(root1,k);
+          // insertNonFull(root1,k);
         }
     }
 
