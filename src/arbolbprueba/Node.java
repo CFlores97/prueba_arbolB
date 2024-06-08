@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class Node {
     private int n; //number of keys
-    private ArrayList<Key> keys = new ArrayList<>(); //keys stored in nondrecreasing order
+    ArrayList<Key> keys = new ArrayList<>(); //keys stored in nondrecreasing order
     private boolean isLeaf;
     private ArrayList<Node> children = new ArrayList<>();
 
@@ -55,6 +55,9 @@ public class Node {
     
     public void setChild(Node child){
         this.children.add(child);
+    }
+    public void insertKey(int pos,Key k){
+        keys.add(pos, k);
     }
     public void setChildren(ArrayList<Node> children) {
         this.children = children;

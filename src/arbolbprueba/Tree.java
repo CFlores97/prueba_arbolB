@@ -37,6 +37,7 @@ public class Tree {
         this.grade = grade;
     }
     
+    
     //crear Arbol B vacio
     
     public Node createBTree(){
@@ -102,6 +103,45 @@ public class Tree {
         x.getKeys().add(i, y.getKey(gradoMin));
         x.setN(x.getN() + 1);
     }
+    public void insert(Key k){
+        Node root1 = root;
+        if (root1.getN()==(grade-1)){
+            Node s = new Node();
+            root = s;
+            s.setIsLeaf(false);
+            s.setN(0);
+            s.setChild(root1);
+            split(s,0,root1);
+            insertNonFull(s,k);
+        }else{
+           insertNonFull(root1,k);
+        }
+    }
+
+    private void insertNonFull(Node x, Key k) {
+        int i = x.getN();
+        if (x.isIsLeaf()) {
+            while(i>=1 && k.getASCII() < x.getKey(i).getASCII()){
+                x.keys.set(i + 1, x.keys.get(i));
+                i--;
+            }
+             x.keys.set(i + 1, k);
+             x.setN(x.getN()+1);
+        }else{
+            while(i>=1 && k.getASCII() < x.getKey(i).getASCII()){
+                i--;
+            }
+            i++;
+            if (x.getChild(i).getN()==grade-1) {
+                split(x, i, x.getChild(i));
+                if (k.getASCII()>x.getKey(i).getASCII()) {
+                    i++;
+                }
+            }
+            insertNonFull(x.getChild(i), k);
+        }
+    }
+    
 }
 
 
