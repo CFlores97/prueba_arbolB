@@ -1,21 +1,15 @@
 package arbolbprueba;
 
-<<<<<<< HEAD
-=======
 import java.util.ArrayList;
 
->>>>>>> master
 public class Tree {
 
     private Node root;
     private int grade;
-<<<<<<< HEAD
-=======
 
     public Tree() {
 
     }
->>>>>>> master
 
     public Tree(Node root, int grade) {
         this.root = root;
@@ -74,16 +68,10 @@ public class Tree {
         return search(root.getChild(i), k);
     }
 
-<<<<<<< HEAD
-    //split 
-=======
-    //split  "x" no esta full, "y" esta full e hijo de "x"
->>>>>>> master
     public void split(Node x, int i, Node y) {
         Node z = new Node();
         z.setIsLeaf(y.isIsLeaf());
 
-<<<<<<< HEAD
         int minKeys = (grade - 1) / 2;
         int gradoMin = grade / 2;
 
@@ -112,7 +100,7 @@ public class Tree {
         }
 
         x.getKeys().add(i, y.getKey(gradoMin));
-=======
+
         int t = (grade + 1) / 2;
         z.setN(t - 1);
 
@@ -161,7 +149,6 @@ public class Tree {
             }
         }
 
->>>>>>> master
         x.setN(x.getN() + 1);
 
         System.out.println("Índice del hijo z: " + (i + 1));
@@ -183,21 +170,23 @@ public class Tree {
     }
 
     private void insertNonFull(Node x, Key k) {
-        int i = x.getN();
+        int i = x.getN() - 1;
         if (x.isIsLeaf()) {
-            while (i >= 1 && k.hashCode() < x.getKey(i).hashCode()) {
+             x.keys.add(null);
+            while (i >= 0 && k.hashCode() < x.getKey(i).hashCode()) {
                 x.keys.set(i + 1, x.keys.get(i));
                 i--;
             }
             x.keys.set(i + 1, k);
             x.setN(x.getN() + 1);
         } else {
-            while (i >= 1 && k.hashCode() < x.getKey(i).hashCode()) {
+            while (i >= 0 && k.hashCode() < x.getKey(i).hashCode()) {
                 i--;
             }
             i++;
-            if (x.getChild(i).getN() == grade - 1) {
-                split(x, i, x.getChild(i));
+            Node child = x.getChild(i);
+            if (child.getN() == grade - 1) {
+                split(x, i, child);
                 if (k.hashCode() > x.getKey(i).hashCode()) {
                     i++;
                 }
@@ -283,17 +272,18 @@ public class Tree {
         return x.getChild(idx + 1);
     }
 
-    private Key RootKey(Node x,Key k){
+    private Key RootKey(Node x, Key k) {
         Node parent = findParent(root, x); // Encuentra el padre del nodo x
-        Key v = null; 
+        Key v = null;
         if (parent != null) {
             int index = parent.getChildren().indexOf(x);
             if (index > 0) {
                 v = parent.keys.get(index - 1); // La clave padre es la clave anterior al nodo en el padre
             }
-        } 
+        }
         return v;
     }
+
     private Node mergeNodes(Node n1, Node n2) {
         Node mergedNode = new Node();
         mergedNode.keys.addAll(n1.keys);

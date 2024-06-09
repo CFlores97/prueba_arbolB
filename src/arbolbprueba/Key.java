@@ -38,8 +38,8 @@ public class Key {
         }
         return iguales;
     }
-<<<<<<< HEAD
- public int compareTo(Key other) {
+
+    public int compareTo(Key other) {
         return this.keyValue.compareTo(other.keyValue);
     }
 
@@ -60,14 +60,5 @@ public class Key {
     public String toString() {
         return keyValue;
     }   
-=======
-
-
-    @Override
-    public String toString() {
-        return  keyValue;
-    }
-
->>>>>>> master
 
 }
