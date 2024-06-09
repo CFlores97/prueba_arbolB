@@ -19,6 +19,7 @@ public class Key {
     public void setKeyValue(String keyValue) {
         this.keyValue = keyValue;
     }
+
     public int getASCII(){
         int sum = 0;
         for (int i = 0; i < keyValue.length(); i++) {
@@ -37,6 +38,7 @@ public class Key {
         }
         return iguales;
     }
+<<<<<<< HEAD
  public int compareTo(Key other) {
         return this.keyValue.compareTo(other.keyValue);
     }
@@ -58,5 +60,14 @@ public class Key {
     public String toString() {
         return keyValue;
     }   
+=======
+
+
+    @Override
+    public String toString() {
+        return  keyValue;
+    }
+
+>>>>>>> master
 
 }
