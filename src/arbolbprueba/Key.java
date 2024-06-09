@@ -37,4 +37,26 @@ public class Key {
         }
         return iguales;
     }
+ public int compareTo(Key other) {
+        return this.keyValue.compareTo(other.keyValue);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Key key = (Key) obj;
+        return keyValue.equals(key.keyValue);
+    }
+
+    @Override
+    public int hashCode() {
+        return keyValue.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return keyValue;
+    }   
+
 }

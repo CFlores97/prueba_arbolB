@@ -141,7 +141,14 @@ public class Tree {
             insertNonFull(x.getChild(i), k);
         }
     }
-    
+    private void moveKey(Key k, Node n1, Node n2) {
+        n1.keys.remove(k);
+        n2.keys.add(k);
+    }
+    private void removeKey(Key k, Node n) {
+        n.keys.remove(k);
+        n.setN(n.getN()-1);
+    }
 }
 
 
