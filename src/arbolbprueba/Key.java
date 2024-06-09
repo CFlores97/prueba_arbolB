@@ -19,6 +19,10 @@ public class Key {
     public void setKeyValue(String keyValue) {
         this.keyValue = keyValue;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return  keyValue;
+    }
+
 }
