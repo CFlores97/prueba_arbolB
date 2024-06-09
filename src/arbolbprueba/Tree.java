@@ -172,7 +172,7 @@ public class Tree {
     private void insertNonFull(Node x, Key k) {
         int i = x.getN() - 1;
         if (x.isIsLeaf()) {
-             x.keys.add(null);
+            x.keys.add(null);
             while (i >= 0 && k.hashCode() < x.getKey(i).hashCode()) {
                 x.keys.set(i + 1, x.keys.get(i));
                 i--;
@@ -203,6 +203,10 @@ public class Tree {
     private void removeKey(Key k, Node n) {
         n.keys.remove(k);
         n.setN(n.getN() - 1);
+    }
+
+    public void deleteKey(Key k) {
+        deleteKey(root, k);
     }
 
     private void deleteKey(Node x, Key k) {

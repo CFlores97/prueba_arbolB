@@ -42,15 +42,21 @@ public class ArbolBPrueba {
 
         Key k = new Key ("10");
         Key k2 = new Key ("3");
+        Key k3 = new Key ("11");
         myTree.insert(k);
         myTree.insert(k2);
+        myTree.insert(k3);
         System.out.println("Insert");
         System.out.println("Raíz: " + myTree.getRoot());
         for (Node hijo : myTree.getRoot().getChildren()) {
             System.out.println("Child: " + hijo);
         }
         System.out.println("delete");
-        
+        myTree.deleteKey(k);
+        System.out.println("Raíz: " + myTree.getRoot());
+        for (Node hijo : myTree.getRoot().getChildren()) {
+            System.out.println("Child: " + hijo);
+        }
     }
 
 }
