@@ -66,9 +66,9 @@ public class Node {
     @Override
     public String toString() {
         return "Node{" +
-                "n=" + n +
-                ", keys=" + keys +
-                ", isLeaf=" + isLeaf +
+      
+                "keys=" + keys +
+                
                 ", children=" + children +
                 '}';
     }
