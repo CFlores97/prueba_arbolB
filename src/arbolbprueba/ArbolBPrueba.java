@@ -40,15 +40,17 @@ public class ArbolBPrueba {
             System.out.println("Child: " + hijo);
         }
 
-        // Realizar split en hijo2 para este ejemplo
-        myTree.split(myTree.getRoot(), 1, hijo2);
-
-        System.out.println("\nAfter split");
+        Key k = new Key ("10");
+        Key k2 = new Key ("3");
+        myTree.insert(k);
+        myTree.insert(k2);
+        System.out.println("Insert");
         System.out.println("Raíz: " + myTree.getRoot());
         for (Node hijo : myTree.getRoot().getChildren()) {
             System.out.println("Child: " + hijo);
         }
-
+        System.out.println("delete");
+        
     }
 
 }
