@@ -43,8 +43,9 @@ public class Tree {
     //crear Arbol B vacio
     public Node createBTree() {
         Node x = new Node();
+        x.setKeys(new ArrayList<Key>());
+        x.setChildren(new ArrayList<Node>());
         x.setIsLeaf(true);
-        x.setN(0);
         return x;
 
     }
@@ -53,18 +54,24 @@ public class Tree {
     public Node search(Node root, Key k) {
         int i = 0;
 
-        while (i <= root.getN() && k.getKeyValue().compareTo(root.getKey(i).getKeyValue()) > 0) {
+        // Compara los hashcodes en lugar de los valores
+        while (i < root.getN() && k.hashCode() > root.getKey(i).hashCode()) {
             i++;
         }
 
-        if (i <= root.getN() && k.getKeyValue().compareTo(root.getKey(i).getKeyValue()) == 0) {
-            return root;
+        // Verifica si el hashcode es igual y luego usa equals para asegurar la igualdad
+        if (i < root.getN() && k.hashCode() == root.getKey(i).hashCode()) {
+            if (k.equals(root.getKey(i))) {
+                return root;
+            }
         }
 
+        // Si es una hoja, devuelve null ya que no se encontró la clave
         if (root.isIsLeaf()) {
             return null;
         }
 
+        // Llama recursivamente a search en el hijo correspondiente
         return search(root.getChild(i), k);
     }
 
@@ -72,69 +79,35 @@ public class Tree {
         Node z = new Node();
         z.setIsLeaf(y.isIsLeaf());
 
-        int minKeys = (grade - 1) / 2;
-        int gradoMin = grade / 2;
-
-        z.setN(minKeys);
-
-        for (int j = 0; j < minKeys; j++) {
-            z.getKeys().add(y.getKey(j + gradoMin));
-        }
-
-        if (!y.isIsLeaf()) {
-            for (int j = 0; j < gradoMin; j++) {
-                z.getChildren().add(y.getChild(j + gradoMin));
-            }
-        }
-
-        y.setN(minKeys);
-
-        for (int j = x.getN(); j > i; j--) {
-            x.getChildren().add(j + 1, x.getChild(j));
-        }
-
-        x.getChildren().add(i + 1, z);
-
-        for (int j = x.getN() - 1; j > i; j--) {
-            x.getKeys().add(j + 1, x.getKey(j));
-        }
-
-        x.getKeys().add(i, y.getKey(gradoMin));
-
-        int t = (grade + 1) / 2;
+        int t = grade / 2;
         z.setN(t - 1);
 
-        // Copia las llaves superiores al nuevo nodo z
+        // Move the second half of y's keys to z
         for (int j = 0; j < t - 1; j++) {
             z.getKeys().add(y.getKey(j + t));
         }
 
+        // If y is not a leaf, move the second half of y's children to z
         if (!y.isIsLeaf()) {
-            // Copia los hijos superiores al nuevo nodo z
             for (int j = 0; j < t; j++) {
                 z.getChildren().add(y.getChild(j + t));
             }
         }
 
-        // Ajusta el número de llaves en y
         y.setN(t - 1);
 
-        // Mueve los hijos de x para hacer espacio para z
-        x.getChildren().add(null); // Añadir un elemento nulo para asegurar el tamaño de la lista
+        // Shift children of x to make room for z
+        x.getChildren().add(null);
         for (int j = x.getN(); j >= i + 1; j--) {
             x.getChildren().set(j + 1, x.getChild(j));
         }
-
-        // Enlaza z al nodo padre x
         x.getChildren().set(i + 1, z);
 
-        // Mueve las llaves de x para hacer espacio para la llave del medio
-        x.getKeys().add(null); // Añadir un elemento nulo para asegurar el tamaño de la lista
+        // Shift keys of x to make room for y's median key
+        x.getKeys().add(null);
         for (int j = x.getN() - 1; j >= i; j--) {
             x.getKeys().set(j + 1, x.getKey(j));
         }
-
-        // Mueve la llave del medio de y a x
         x.getKeys().set(i, y.getKey(t - 1));
 
         // Elimina las llaves movidas de y
@@ -150,8 +123,6 @@ public class Tree {
         }
 
         x.setN(x.getN() + 1);
-
-        System.out.println("Índice del hijo z: " + (i + 1));
     }
 
     public void insert(Key k) {
@@ -172,7 +143,7 @@ public class Tree {
     private void insertNonFull(Node x, Key k) {
         int i = x.getN() - 1;
         if (x.isIsLeaf()) {
-             x.keys.add(null);
+            x.keys.add(null);
             while (i >= 0 && k.hashCode() < x.getKey(i).hashCode()) {
                 x.keys.set(i + 1, x.keys.get(i));
                 i--;
