@@ -216,7 +216,7 @@ public class Tree {
 
     private Key RootKey(Node x,Key k){
         Node parent = findParent(root, x); // Encuentra el padre del nodo x
-        Key v = null; // Inicializa la clave padre como nula
+        Key v = null; 
         if (parent != null) {
             int index = parent.getChildren().indexOf(x);
             if (index > 0) {
