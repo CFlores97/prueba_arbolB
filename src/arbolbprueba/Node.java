@@ -50,11 +50,21 @@ public class Node {
     }
 
     public Node getChild(int i){
-        return children.get(i);
+         if (i >= 0 && i < children.size()) {
+            return children.get(i);
+        }
+        return null;
     }
     
     public void setChild(Node child){
         this.children.add(child);
+    }
+     public void setChild(int index, Node child) {
+        if (index >= 0 && index < children.size()) {
+            children.set(index, child);
+        } else if (index == children.size()) {
+            children.add(child);
+        }
     }
     public void insertKey(int pos,Key k){
         keys.add(pos, k);
