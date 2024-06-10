@@ -52,7 +52,9 @@ public class ArbolBPrueba {
             System.out.println("Child: " + hijo);
         }
         System.out.println("delete");
-      myTree.delete(k2);
+        myTree.delete(k2);
+        myTree.delete(k3);
+        myTree.delete(k);
         System.out.println("Raíz: " + myTree.getRoot());
         for (Node hijo : myTree.getRoot().getChildren()) {
             System.out.println("Child: " + hijo);
