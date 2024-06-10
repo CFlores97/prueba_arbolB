@@ -453,67 +453,69 @@ public class Tree {
         return cur.getKey(0);
     }
 
-   private void merge(Node x, int idx) {
-    // Ensure the indices are valid before accessing children
+private void merge(Node x, int idx) {
+
+    // Asegúrese de que los índices sean válidos antes de acceder a los hijos
     if (idx + 1 >= x.getChildren().size()) {
-        System.out.println("Merge: Sibling index out of bounds: " + (idx + 1));
+        System.out.println("Merge: Índice del hermano fuera de límites: " + (idx + 1));
         return;
     }
 
     Node child = x.getChild(idx);
     Node sibling = x.getChild(idx + 1);
 
-    // Ensure the child has enough space
+    // Asegúrese de que el hijo tenga suficiente espacio
     if (child.getN() >= child.keys.size()) {
-        System.out.println("Merge: Child has no space for merging.");
+        System.out.println("Merge: El hijo no tiene espacio para fusionarse.");
         return;
     }
 
-    // Insert the key from the parent into the child node
+    // Insertar la clave del padre en el nodo hijo
     child.keys.set(child.getN(), x.getKey(idx));
 
-    // Copy the keys from the sibling to the child
+    // Copiar las claves del hermano al hijo
     for (int i = 0; i < sibling.getN(); ++i) {
         if (i + child.getN() + 1 >= child.keys.size()) {
-            System.out.println("Merge: Child keys array out of bounds during merge.");
+            System.out.println("Merge: El arreglo de claves del hijo está fuera de límites durante la fusión.");
             return;
         }
         child.keys.set(i + child.getN() + 1, sibling.getKey(i));
     }
 
-    // Copy the children from the sibling to the child
+    // Copiar los hijos del hermano al hijo
     if (!child.isIsLeaf()) {
         for (int i = 0; i <= sibling.getN(); ++i) {
             if (i + child.getN() + 1 >= child.getChildren().size()) {
-                System.out.println("Merge: Child children array out of bounds during merge.");
+                System.out.println("Merge: El arreglo de hijos del hijo está fuera de límites durante la fusión.");
                 return;
             }
             child.setChild(i + child.getN() + 1, sibling.getChild(i));
         }
     }
 
-    // Move keys in the parent node
+    // Mover las claves en el nodo padre
     for (int i = idx + 1; i < x.getN(); ++i) {
         if (i - 1 >= x.keys.size() || i >= x.keys.size()) {
-            System.out.println("Merge: Parent keys array out of bounds during shift.");
+            System.out.println("Merge: El arreglo de claves del padre está fuera de límites durante el desplazamiento.");
             return;
         }
         x.keys.set(i - 1, x.getKey(i));
     }
 
-    // Move children in the parent node
+    // Mover los hijos en el nodo padre
     for (int i = idx + 2; i <= x.getN(); ++i) {
         if (i - 1 >= x.getChildren().size() || i >= x.getChildren().size()) {
-            System.out.println("Merge: Parent children array out of bounds during shift.");
+            System.out.println("Merge: El arreglo de hijos del padre está fuera de límites durante el desplazamiento.");
             return;
         }
         x.setChild(i - 1, x.getChild(i));
     }
 
-    // Update the number of keys in the child and parent nodes
+    // Actualizar el número de claves en los nodos hijo y padre
     child.setN(child.getN() + sibling.getN() + 1);
     x.setN(x.getN() - 1);
 }
+
 
     private void borrowFromPrev(Node x, int idx) {
         Node child = x.getChild(idx);
