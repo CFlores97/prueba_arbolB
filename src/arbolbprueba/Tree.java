@@ -124,6 +124,65 @@ public class Tree {
 
         x.setN(x.getN() + 1);
     }
+//    public void split(Node x, int i, Node y) {
+//    Node z = new Node();
+//    z.setIsLeaf(y.isIsLeaf());
+//
+//    int minKeys = (grade - 1) / 2;
+//    int gradoMin = grade / 2;
+//
+//    // Ajuste: Asegurarse de que las listas tienen el tamaño adecuado
+//    while (z.getKeys().size() < minKeys) {
+//        z.getKeys().add(null);
+//    }
+//    while (z.getChildren().size() < gradoMin) {
+//        z.getChildren().add(null);
+//    }
+//
+//    // Copiar la segunda mitad de las claves de y a z
+//    for (int j = 0; j < minKeys; j++) {
+//        z.getKeys().set(j, y.getKey(j + gradoMin));
+//    }
+//
+//    // Copiar la segunda mitad de los hijos de y a z
+//    if (!y.isIsLeaf()) {
+//        for (int j = 0; j < gradoMin; j++) {
+//            z.getChildren().set(j, y.getChild(j + gradoMin));
+//        }
+//    }
+//
+//    y.setN(minKeys);
+//
+//    // Mover los hijos de x para crear espacio para el nuevo hijo
+//    x.getChildren().add(null); // Añadir un elemento nulo para asegurar el tamaño de la lista
+//    for (int j = x.getN(); j >= i + 1; j--) {
+//        x.getChildren().set(j + 1, x.getChild(j));
+//    }
+//
+//    x.getChildren().set(i + 1, z);
+//
+//    // Mover las claves de x para crear espacio para la nueva clave
+//    x.getKeys().add(null); // Añadir un elemento nulo para asegurar el tamaño de la lista
+//    for (int j = x.getN() - 1; j >= i; j--) {
+//        x.getKeys().set(j + 1, x.getKey(j));
+//    }
+//
+//    x.getKeys().set(i, y.getKey(gradoMin - 1));
+//    x.setN(x.getN() + 1);
+//
+//    // Ajustar las claves y los hijos de y
+//    for (int j = gradoMin - 1; j < y.getKeys().size(); j++) {
+//        y.getKeys().set(j, null);
+//    }
+//    if (!y.isIsLeaf()) {
+//        for (int j = gradoMin; j < y.getChildren().size(); j++) {
+//            y.getChildren().set(j, null);
+//        }
+//    }
+//
+//    System.out.println("Índice del hijo z: " + (i + 1));
+//}
+
 
     public void insert(Key k) {
         Node root1 = root;
@@ -177,58 +236,201 @@ public class Tree {
     }
 
     private void deleteKey(Node x, Key k) {
-        if (!x.isIsLeaf()) {
-            Node y = precedingChild(x);
-            Node z = succesorChild(x, k);
-            if (y.getN() > grade - 1) {
-                Key kPrime = findPredecessorKey(y, k);
-                moveKey(kPrime, y, x);
-                moveKey(k, x, z);
-                deleteKey(z, k);
-            } else if (z.getN() > grade - 1) {
-                Key kPrime = findSuccessorKey(z, k);
-                moveKey(kPrime, z, x);
-                moveKey(k, x, y);
-                deleteKey(y, k);
+        int idx = findKey(x, k);
+
+        if (idx < x.getN() && x.getKey(idx).equals(k)) {
+            if (x.isIsLeaf()) {
+                for (int i = idx + 1; i < x.getN(); ++i) {
+                    x.keys.set(i - 1, x.keys.get(i));
+                }
+                x.keys.remove(x.getN() - 1);
+                x.setN(x.getN() - 1);
             } else {
-                moveKey(k, x, y);
-                Node mergedNode = mergeNodes(y, z);
-                x.getChildren().remove(z);
-                deleteKey(mergedNode, k);
-            }
-        } else {
-            // Caso de nodo hoja
-            Node y = precedingChild(x);
-            Node z = succesorChild(x, k);
-            Node w = root;
-            Key v = RootKey(x, k);
-            if (x.getN() > grade - 1) {
-                removeKey(k, x);
-            } else if (y.getN() > grade - 1) {
-                Key kPrime = findPredecessorKey(w, v);
-                moveKey(kPrime, y, w);
-                kPrime = findSuccessorKey(w, v);
-                moveKey(kPrime, w, x);
-                deleteKey(x, k);
-            } else if (w.getN() > grade - 1) {
-                Key kPrime = findSuccessorKey(w, v);
-                moveKey(kPrime, z, w);
-                kPrime = findPredecessorKey(w, v);
-                moveKey(kPrime, w, x);
-                deleteKey(y, k);
-            } else {
-                Node s = findSibling(w);
-                Node wPrime = w;
-                if (wPrime.getN() == grade - 1) {
-                    mergeNodes(wPrime, w);
-                    mergeNodes(w, s);
-                    deleteKey(x, k);
+                Key pred = getPredecessor(x, idx);
+                Key succ = getSuccessor(x, idx);
+
+                if (x.getChild(idx).getN() > (grade - 1) / 2) {
+                    x.keys.set(idx, pred);
+                    deleteKey(x.getChild(idx), pred);
+                } else if (x.getChild(idx + 1).getN() > (grade - 1) / 2) {
+                    x.keys.set(idx, succ);
+                    deleteKey(x.getChild(idx + 1), succ);
                 } else {
-                    moveKey(v, w, x);
-                    deleteKey(x, k);
+                    merge(x, idx); // Merge if the child has less than (grade - 1) / 2 keys
+                    deleteKey(x.getChild(idx), k);
                 }
             }
+        } else {
+            if (x.isIsLeaf()&& (search(root, k)==null)) {
+                System.out.println("La clave " + k + " no existe en el árbol.");
+                return;
+            }
+
+            boolean flag = (idx == x.getN());
+            Node child = x.getChild(idx);
+
+            if (child.getN() <= (grade - 1) / 2) {
+                if (idx != 0 && x.getChild(idx - 1).getN() > (grade - 1) / 2) {
+                    borrowFromPrev(x, idx);
+                } else if (idx != x.getN() && x.getChild(idx + 1).getN() > (grade - 1) / 2) {
+                    borrowFromNext(x, idx);
+                } else {
+                    if (idx != x.getN()) {
+                        merge(x, idx);
+                    } else {
+                        merge(x, idx - 1);
+                        idx--;
+                    }
+                }
+            }
+
+            if (flag && idx > x.getN()) {
+                deleteKey(x.getChild(idx - 1), k);
+            } else {
+                deleteKey(x.getChild(idx), k);
+            }
         }
+    }
+
+    public void delete(Key k) {
+        if (root == null) {
+            System.out.println("El árbol está vacío.");
+            return;
+        }
+
+        deleteKey(root, k);
+
+        if (root.getN() == 0) {
+            if (root.isIsLeaf()) {
+                root = null;
+            } else {
+                root = root.getChild(0);
+            }
+        }
+    }
+
+    private int findKey(Node x, Key k) {
+        int idx = 0;
+        while (idx < x.getN() && x.getKey(idx).hashCode() < k.hashCode()) {
+            ++idx;
+        }
+        return idx;
+    }
+
+    private Key getPredecessor(Node x, int idx) {
+        Node cur = x.getChild(idx);
+        while (!cur.isIsLeaf()) {
+            cur = cur.getChild(cur.getN());
+        }
+        return cur.getKey(cur.getN() - 1);
+    }
+
+    private Key getSuccessor(Node x, int idx) {
+        Node cur = x.getChild(idx + 1);
+        while (!cur.isIsLeaf()) {
+            cur = cur.getChild(0);
+        }
+        return cur.getKey(0);
+    }
+
+    private void merge(Node x, int idx) {
+    if (idx + 1 >= x.getChildren().size()) {
+        System.out.println("Merge: Sibling index out of bounds: " + (idx + 1));
+        return;
+    }
+
+    Node child = x.getChild(idx);
+    Node sibling = x.getChild(idx + 1);
+
+    // Asegurarse de que el hijo tiene suficiente espacio
+    while (child.getKeys().size() < grade - 1) {
+        child.getKeys().add(null);
+    }
+
+    child.keys.set(child.getN(), x.getKey(idx));
+
+    for (int i = 0; i < sibling.getN(); ++i) {
+        if (i + child.getN() + 1 >= child.keys.size()) {
+            System.out.println("Merge: Child keys array out of bounds during merge.");
+            return;
+        }
+        child.keys.set(i + child.getN() + 1, sibling.getKey(i));
+    }
+
+    if (!child.isIsLeaf()) {
+        while (child.getChildren().size() < grade) {
+            child.getChildren().add(null);
+        }
+        for (int i = 0; i <= sibling.getN(); ++i) {
+            child.setChild(i + child.getN() + 1, sibling.getChild(i));
+        }
+    }
+
+    for (int i = idx + 1; i < x.getN(); ++i) {
+        if (i - 1 >= x.keys.size() || i >= x.keys.size()) {
+            System.out.println("Merge: Parent keys array out of bounds during shift.");
+            return;
+        }
+        x.keys.set(i - 1, x.getKey(i));
+    }
+
+    for (int i = idx + 2; i <= x.getN(); ++i) {
+        if (i - 1 >= x.getChildren().size() || i >= x.getChildren().size()) {
+            System.out.println("Merge: Parent children array out of bounds during shift.");
+            return;
+        }
+        x.setChild(i - 1, x.getChild(i));
+    }
+    child.setN(child.getN() + sibling.getN() + 1);
+    x.setN(x.getN() - 1);
+}
+
+    private void borrowFromPrev(Node x, int idx) {
+        Node child = x.getChild(idx);
+        Node sibling = x.getChild(idx - 1);
+
+        for (int i = child.getN() - 1; i >= 0; --i) {
+            child.keys.set(i + 1, child.keys.get(i));
+        }
+
+        if (!child.isIsLeaf()) {
+            for (int i = child.getN(); i >= 0; --i) {
+                child.setChild(i + 1, child.getChild(i));
+            }
+        }
+
+        child.keys.set(0, x.getKey(idx - 1));
+        if (!child.isIsLeaf()) {
+            child.setChild(0, sibling.getChild(sibling.getN()));
+        }
+
+        x.keys.set(idx - 1, sibling.getKey(sibling.getN() - 1));
+        child.setN(child.getN() + 1);
+        sibling.setN(sibling.getN() - 1);
+    }
+
+    private void borrowFromNext(Node x, int idx) {
+        Node child = x.getChild(idx);
+        Node sibling = x.getChild(idx + 1);
+
+        child.keys.set(child.getN(), x.getKey(idx));
+        if (!child.isIsLeaf()) {
+            child.setChild(child.getN() + 1, sibling.getChild(0));
+        }
+
+        x.keys.set(idx, sibling.getKey(0));
+        for (int i = 1; i < sibling.getN(); ++i) {
+            sibling.keys.set(i - 1, sibling.keys.get(i));
+        }
+
+        if (!sibling.isIsLeaf()) {
+            for (int i = 1; i <= sibling.getN(); ++i) {
+                sibling.setChild(i - 1, sibling.getChild(i));
+            }
+        }
+
+        child.setN(child.getN() + 1);
+        sibling.setN(sibling.getN() - 1);
     }
 
     private Node precedingChild(Node x) {

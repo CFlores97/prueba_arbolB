@@ -62,7 +62,13 @@ public class Node {
     public void setChildren(ArrayList<Node> children) {
         this.children = children;
     }
-    
+     public void setChild(int index, Node child) {
+        if (index >= 0 && index < children.size()) {
+            children.set(index, child);
+        } else if (index == children.size()) {
+            children.add(child);
+        }
+    }
     @Override
     public String toString() {
         return "Node{" +
