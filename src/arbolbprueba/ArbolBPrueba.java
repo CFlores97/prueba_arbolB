@@ -4,37 +4,37 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ArbolBPrueba {
-    
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         Tree arbol = new Tree();
         //CRUD
 
         boolean running = true;
-        
+
         while (running) {
-            System.out.println("1. Create Tree\n" + "2. Search\n" + "3. Insert\n" + "4. imprimir arbol\n" + "5. Salir");
+            System.out.println("1. Create Tree\n" + "2. Search\n" + "3. Insert\n" + "4. imprimir arbol\n" + "5. Borrar llave\n" + "6. Salir");
             int option = sc.nextInt();
-            
+
             switch (option) {
                 case 1:
                     System.out.println("Ingrese el grado del arbol: ");
                     int grado = sc.nextInt();
-                    
+
                     Node root = arbol.createBTree();
-                    
+
                     arbol = new Tree(root, grado);
-                    
+
                     System.out.println("\nArbol creado exitosamente!");
                     break;
                 case 2:
                     System.out.println("Ingrese la llave que desea buscar(numeros): ");
                     String keyValue = sc.next();
-                    
+
                     Key keyToSearch = new Key(keyValue);
-                    
+
                     Node nodoEncontrado = arbol.search(arbol.getRoot(), keyToSearch);
-                    
+
                     if (nodoEncontrado == null) {
                         System.out.println("No existe esa llave en el arbol");
                     } else {
@@ -44,9 +44,9 @@ public class ArbolBPrueba {
                 case 3:
                     System.out.println("Ingrese el valor de la llave que va a insertar(numeros): ");
                     String valueToInsert = sc.next();
-                    
+
                     Key keyToInsert = new Key(valueToInsert);
-                    
+
                     arbol.insert(keyToInsert);
                     break;
                 case 4:
@@ -56,6 +56,21 @@ public class ArbolBPrueba {
                     }
                     break;
                 case 5:
+                    System.out.println("Ingrese la llave que desea eliminar: ");
+                    String keyValueToDel = sc.next();
+
+                    Key keyToDel = new Key(keyValueToDel);
+
+                    try {
+                        arbol.deleteKey(arbol.getRoot(), keyToDel);
+                        System.out.println("Llave eliminada exitosamente!");
+                    } catch (Exception e) {
+                        System.out.println("No existe esa llave en el arbol");
+                        e.printStackTrace();
+                    }
+
+                    break;
+                case 6:
                     running = false;
                     break;
                 default:
@@ -122,7 +137,5 @@ public class ArbolBPrueba {
 //        }
 //        System.out.println("delete");
     }
-    
-    
-    
+
 }

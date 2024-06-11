@@ -176,7 +176,7 @@ public class Tree {
         n.setN(n.getN() - 1);
     }
 
-    private void deleteKey(Node x, Key k) {
+    public void deleteKey(Node x, Key k) {
         if (!x.isIsLeaf()) {
             Node y = precedingChild(x);
             Node z = succesorChild(x, k);
