@@ -3,39 +3,39 @@ package arbolbprueba;
 import java.util.ArrayList;
 
 public class Tree {
-
+    
     private Node root;
     private int grade;
-
+    
     public Tree() {
-
+        
     }
-
+    
     public Tree(Node root, int grade) {
         this.root = root;
         this.grade = grade;
     }
-
+    
     public Tree(int grade) {
         this.grade = grade;
     }
-
+    
     public Tree(Node root) {
         this.root = root;
     }
-
+    
     public Node getRoot() {
         return root;
     }
-
+    
     public void setRoot(Node root) {
         this.root = root;
     }
-
+    
     public int getGrade() {
         return grade;
     }
-
+    
     public void setGrade(int grade) {
         this.grade = grade;
     }
@@ -47,7 +47,7 @@ public class Tree {
         x.setChildren(new ArrayList<Node>());
         x.setIsLeaf(true);
         return x;
-
+        
     }
 
     //buscar
@@ -74,11 +74,11 @@ public class Tree {
         // Llama recursivamente a search en el hijo correspondiente
         return search(root.getChild(i), k);
     }
-
+    
     public void split(Node x, int i, Node y) {
         Node z = new Node();
         z.setIsLeaf(y.isIsLeaf());
-
+        
         int t = grade / 2;
         z.setN(t - 1);
 
@@ -93,7 +93,7 @@ public class Tree {
                 z.getChildren().add(y.getChild(j + t));
             }
         }
-
+        
         y.setN(t - 1);
 
         // Shift children of x to make room for z
@@ -121,10 +121,10 @@ public class Tree {
                 y.getChildren().remove(y.getN() + 1);
             }
         }
-
+        
         x.setN(x.getN() + 1);
     }
-
+    
     public void insert(Key k) {
         Node root1 = root;
         if (root1.getN() == (grade - 1)) {
@@ -139,7 +139,7 @@ public class Tree {
             insertNonFull(root1, k);
         }
     }
-
+    
     private void insertNonFull(Node x, Key k) {
         int i = x.getN() - 1;
         if (x.isIsLeaf()) {
@@ -165,22 +165,22 @@ public class Tree {
             insertNonFull(x.getChild(i), k);
         }
     }
-
+    
     public void delete(Node x, Key k) {
-        int t = this.grade;
+        int t = ((this.grade - 1) / 2);
         int i = 0;
-
-        while (i < x.getKeys().size() && (k.hashCode()>x.getKey(i).hashCode())) {
+        
+        while (i < x.getKeys().size() && (k.hashCode() > x.getKey(i).hashCode())) {
             i++;
         }
         if (x.isIsLeaf()) {
-            if (i < x.getN() && (k.hashCode()==x.getKey(i).hashCode())) {
+            if (i < x.getN() && (k.hashCode() == x.getKey(i).hashCode())) {
                 x.deleteKey(i);
             }
             return;
         }
-
-        if (i < x.getKeys().size() && (k.hashCode()==x.getKey(i).hashCode())) {
+        
+        if (i < x.getKeys().size() && (k.hashCode() == x.getKey(i).hashCode())) {
             deleteInternalNode(x, k, i);
         } else if (x.getChild(i).getKeys().size() >= t) {
             delete(x.getChild(i), k);
@@ -209,31 +209,33 @@ public class Tree {
             delete(x.getChild(i), k);
         }
     }
-
+    
     public void deleteInternalNode(Node x, Key k, int i) {
-        int t = this.grade;
+        int t = ((this.grade - 1) / 2);
         if (x.isIsLeaf()) {
-            if (x.getKey(i).hashCode()==k.hashCode()) {
+            if (x.getKey(i).equals(k)) {
                 x.deleteKey(i);
             }
             return;
         }
-
+        
         if (x.getChild(i).getKeys().size() >= t) {
-            x.insertKey(i, deletePredecessor(x.getChild(i)));
+            x.replacekey(i, deletePredecessor(x.getChild(i)));
             return;
         } else if (x.getChild(i + 1).getKeys().size() >= t) {
-            x.insertKey(i, deleteSuccessor(x.getChild(i + 1)));
+            x.replacekey(i, deleteSuccessor(x.getChild(i + 1)));
             return;
         } else {
             deleteMerge(x, i, i + 1);
             deleteInternalNode(x.getChild(i), k, t - 1);
         }
     }
-
+    
     public Key deletePredecessor(Node x) {
         if (x.isIsLeaf()) {
-            return x.getKey(x.getKeys().size()-1);
+            Key r = x.getKey(x.getKeys().size() - 1);
+            x.deleteKey(x.getKeys().size() - 1);
+            return r;            
         }
         int n = x.getKeys().size() - 1;
         if (x.getChild(n).getKeys().size() >= grade) {
@@ -243,10 +245,12 @@ public class Tree {
         }
         return deletePredecessor(x.getChild(n));
     }
-
+    
     public Key deleteSuccessor(Node x) {
         if (x.isIsLeaf()) {
-            return x.getKey(0);
+            Key r = x.getKey(0);
+            x.deleteKey(0);
+            return r;
         }
         if (x.getChild(1).getKeys().size() >= grade) {
             deleteSibling(x, 0, 1);
@@ -255,21 +259,22 @@ public class Tree {
         }
         return deleteSuccessor(x.getChild(0));
     }
-
+    
     public void deleteMerge(Node x, int i, int j) {
         Node cnode = x.getChild(i);
-
+        
         if (j > i) {
             Node rsnode = x.getChild(j);
             cnode.setKey(x.getKey(i));
             for (int k = 0; k < rsnode.getKeys().size(); k++) {
                 cnode.setKey(rsnode.getKey(k));
-                if (rsnode.getChildren().size()>0) {
+                if (rsnode.getChildren().size() > 0) {
                     cnode.setChild(rsnode.getChild(k));
                 }
             }
-            if (rsnode.getChildren().size()>0) {
-                cnode.setChild(rsnode.getChild(rsnode.getChildren().size()-1));
+            if (rsnode.getChildren().size() > 0) {
+                cnode.setChild(rsnode.getChild(rsnode.getChildren().size() - 1));
+                rsnode.deleteChild(rsnode.getChildren().size() - 1);
             }
             Node newChild = cnode;
             x.deleteKey(i);
@@ -279,60 +284,61 @@ public class Tree {
             lsnode.setKey(x.getKey(j));
             for (int l = 0; l < cnode.getKeys().size(); l++) {
                 lsnode.setKey(cnode.getKey(i));
-                if (lsnode.getChildren().size()>0) {
+                if (lsnode.getChildren().size() > 0) {
                     lsnode.setChild(cnode.getChild(i));
                 }
             }
-            if (lsnode.getChildren().size()>0) {
-                lsnode.setChild(cnode.getChild(cnode.getChildren().size()-1));
+            if (lsnode.getChildren().size() > 0) {
+                lsnode.setChild(cnode.getChild(cnode.getChildren().size() - 1));
+                cnode.deleteChild(cnode.getChildren().size() - 1);
             }
             Node newChild = lsnode;
             x.deleteKey(j);
             x.deleteChild(i);
         }
-
-        if (x.hashCode() == root.hashCode() && (x.getKeys().size()==0)) {
+        
+        if (x.equals(root) && (x.getKeys().size() == 0)) {
             Node newChild = new Node();
             root = newChild;
         }
     }
-
+    
     public void deleteSibling(Node x, int i, int j) {
         Node cNode = x.getChild(i);
         if (i < j) {
             Node rsNode = x.getChild(j);
             cNode.setKey(x.getKey(i));
             x.replacekey(i, rsNode.getKey(0));
-            if (rsNode.getChildren().size()>0) {
+            if (rsNode.getChildren().size() > 0) {
                 cNode.setChild(rsNode.getChild(0));
                 rsNode.deleteChild(0);
             }
             rsNode.deleteKey(0);
         } else {
             Node lsNode = x.getChild(j);
-            cNode.insertKey(0, x.getKey(i-1));
-            x.replacekey(i-1, lsNode.getKey(lsNode.getKeys().size()-1));
-            if (lsNode.getChildren().size()>0) {
-                cNode.setChild(0, lsNode.getChild(lsNode.getChildren().size()-1));
+            cNode.insertKey(0, x.getKey(i - 1));
+            x.replacekey(i - 1, lsNode.getKey(lsNode.getKeys().size() - 1));
+            if (lsNode.getChildren().size() > 0) {
+                cNode.setChild(0, lsNode.getChild(lsNode.getChildren().size() - 1));
             }
         }
     }
-
+    
     public void printTree(Node x, int level) {
         System.out.print("Level " + level + ": ");
-
+        
         for (Key key : x.getKeys()) {
             System.out.print(key + " ");
         }
-
+        
         System.out.println();
         level++;
-
+        
         if (!x.getChildren().isEmpty()) {
             for (Node child : x.getChildren()) {
                 printTree(child, level);
             }
         }
     }
-
+    
 }
