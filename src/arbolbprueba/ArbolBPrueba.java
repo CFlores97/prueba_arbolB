@@ -120,14 +120,13 @@ public class ArbolBPrueba {
         for (Node hijo : myTree.getRoot().getChildren()) {
             System.out.println("Child: " + hijo);
         }
-        System.out.println("delete");
-//        myTree.delete(k);
-//        myTree.delete(k5);
-//        myTree.delete(k6);
-//        System.out.println("Raíz: " + myTree.getRoot());
-//        for (Node hijo : myTree.getRoot().getChildren()) {
-//            System.out.println("Child: " + hijo);
-//        }
+        myTree.printTree(root, 1);
+        myTree.delete(root, k3);
+        System.out.println("delete2: "+k3.toString());
+        myTree.delete(root, k9);
+        System.out.println("delete3: "+k9.toString());
+        
+        myTree.printTree(root, 1);
     }
     
     

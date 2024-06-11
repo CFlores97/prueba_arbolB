@@ -59,6 +59,15 @@ public class Node {
     public void insertKey(int pos,Key k){
         keys.add(pos, k);
     }
+    public void deleteKey(int pos){
+        keys.remove(pos);
+    }
+    public void deleteChild(int pos){
+        children.remove(pos);
+    }
+    public void replacekey(int pos,Key k){
+        keys.set(pos, k);
+    }
     public void setChildren(ArrayList<Node> children) {
         this.children = children;
     }

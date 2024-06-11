@@ -31,7 +31,7 @@ public class Key {
     }
     public boolean compare(Key k1,Key k2){
         boolean iguales=false;
-        if (k1.getASCII()==k2.getASCII()) {
+        if (k1.hashCode()==k2.hashCode()) {
             if (k1.getKeyValue().equals(k2.getKeyValue())) {
                 iguales= true;
             }
